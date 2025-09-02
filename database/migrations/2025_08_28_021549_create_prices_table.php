@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer("cuantity");
             $table->decimal("price",10,2);
             $table->integer("discount");
-            $table->enum('status', ['active', 'inactive', 'hidden'])->default('active');
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

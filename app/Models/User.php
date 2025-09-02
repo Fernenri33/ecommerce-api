@@ -19,8 +19,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
+        'email_verified_at',
         'password',
+        'rol_id',
+        'remember_token',
     ];
 
     /**
@@ -44,5 +48,36 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Mutators para encriptar datos sensibles
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = encrypt($value);
+    }
+
+    public function getNameAttribute($value)
+    {
+        return decrypt($value);
+    }
+
+    public function setLastNameAttribute($value)
+    {
+        $this->attributes['last_name'] = encrypt($value);
+    }
+
+    public function getLastNameAttribute($value)
+    {
+        return decrypt($value);
+    }
+
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = encrypt($value);
+    }
+
+    public function getEmailAttribute($value)
+    {
+        return decrypt($value);
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id")->constrained("users");
-            $table->foreignId("cart")->constrained("carts");
+            $table->foreignId("cart_id")->constrained("carts");
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id")->constrained("users");
-            $table->enum('status', ['active', 'cancelled', 'checked_out'])->default('active');
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

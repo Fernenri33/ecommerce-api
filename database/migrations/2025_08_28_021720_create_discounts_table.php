@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("name")->unique();
             $table->text("description")->nullable();
             $table->decimal("cuantity",5,2);
-            $table->enum('status', ['active', 'inactive', 'hidden'])->default('active');
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }
