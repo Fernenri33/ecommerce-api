@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    public function unit(){
+        return $this->belongsTo(Unit::class);
+    }
+    public function productSubCategories(){
+        return $this->hasMany(ProductSubcategory::class);
+    }
+    public function subcategories(){
+        return $this->belongsToMany(Subcategory::class, 'product_subcategories');
+    }
     protected $table = 'products';
     protected $primarykey = 'id';
     protected $fillable = [
@@ -18,10 +27,7 @@ class Product extends Model
         'unit_id',
         'status'
     ];
-    protected $cast = [ 
+    protected $casts = [ 
         'status' => Status::class 
     ];
-    public function unit(){
-        $this->belongsTo(Unit::class);
-    }
 }

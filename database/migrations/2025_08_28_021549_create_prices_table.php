@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text("description");
             $table->integer("cuantity");
             $table->decimal("price",10,2);
-            $table->integer("discount");
+            $table->foreignId('discount_id')->constrained('discounts');
             $table->string('status')->default('active');
             $table->timestamps();
         });

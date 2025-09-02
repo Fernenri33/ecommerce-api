@@ -6,10 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subcategory extends Model
 {
+    public function categories(){
+        return $this->belongsTo(Category::class);
+    }
+    public function productSubcategory(){
+        return $this->hasMany(ProductSubcategory::class);
+    }
+    public function products(){
+        return $this->belongsToMany(Product::class, 'product_subcategories');
+    }
     protected $table = 'subcategories';
     protected $primarykey = 'id';
     protected $fillable = ['category_id','name','description'];
-    public function category(){
-        return $this->belongsTo(Category::class);
-    }
 }

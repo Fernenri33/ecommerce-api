@@ -27,6 +27,9 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function carts() { return $this->hasMany(Cart::class); }
+    public function address() { return $this->hasOne(UserAddress::class); }
+    public function roles() { return $this->belongsToMany(Role::class); }
     /**
      * The attributes that should be hidden for serialization.
      *
