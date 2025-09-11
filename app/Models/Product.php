@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Status;
 
 class Product extends Model
 {
+    use HasFactory;
     public function unit(){
         return $this->belongsTo(Unit::class);
     }
@@ -14,6 +17,9 @@ class Product extends Model
     }
     public function subcategories(){
         return $this->belongsToMany(Subcategory::class, 'product_subcategories');
+    }
+    public function UserFavorites(){
+        return $this->belongsToMany(User::class, 'user_favorite_products');
     }
     protected $table = 'products';
     protected $primarykey = 'id';

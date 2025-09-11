@@ -12,6 +12,11 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    public function carts() { return $this->hasMany(Cart::class); }
+    public function address() { return $this->hasMany(UserAddress::class); }
+    public function rol() { return $this->hasOne(Role::class); }
+    public function favoriteProducts() { return $this->belongsToMany(Product::class, 'user_favorite_products'); }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -27,9 +32,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function carts() { return $this->hasMany(Cart::class); }
-    public function address() { return $this->hasOne(UserAddress::class); }
-    public function roles() { return $this->belongsToMany(Role::class); }
     /**
      * The attributes that should be hidden for serialization.
      *
