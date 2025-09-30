@@ -22,7 +22,7 @@ class Product extends Model
         return $this->belongsToMany(User::class, 'user_favorite_products');
     }
     protected $table = 'products';
-    protected $primarykey = 'id';
+    protected $primaryKey = 'id';
     protected $fillable = [
         'name',
         'sku',
@@ -34,6 +34,6 @@ class Product extends Model
         'status'
     ];
     protected $casts = [ 
-        'status' => Status::class 
+        'Status' => Status::class 
     ];
 }
