@@ -14,30 +14,46 @@ class ProductController extends Controller
     {
         $this->productService = $productService;
     }
-    public function index()
-    {
-        $result = $this->productService->getAllProducts();
-        return response()->json($result, $result['status_code'] ?? 200);
-    }
-    public function store(Request $request)
-    {
-        try {
-            $productDTO = ProductDTO::fromRequest($request);
-            $result = $this->productService->createProduct($productDTO);
-            return response()->json($result, $result['status_code'] ?? 200);
 
-        } catch (\InvalidArgumentException $e) {
-            return response()->json($result, $result['status_code'] ?? 200);
-        }
+    public function index(Request $request)
+    {
+        $name = $request->query('name');
+
+        $result = (!empty($name)) ? $this->productService->findProductByName($name) : $this->productService->getAllProducts();
+
+        return response()->json($result);
     }
     public function show($id)
     {
         $result = $this->productService->findProductById($id);
         return response()->json($result);
     }
-    public function destroy($id){
+    public function destroy($id)
+    {
         $result = $this->productService->deleteProduct($id);
         return response()->json($result);
+    }
+    public function store(Request $request)
+    {
+        try {
+            $productDTO = ProductDTO::fromRequest($request);
+            $result = $this->productService->createProduct($productDTO);
+            return response()->json($result);
+
+        } catch (\InvalidArgumentException $e) {
+            return response()->json($result);
+        }
+    }
+    public function update(Request $request)
+    {
+        try {
+            $productDTO = ProductDTO::fromRequest($request);
+            $result = $this->productService->createProduct($productDTO);
+            return response()->json($result);
+
+        } catch (\InvalidArgumentException $e) {
+            return response()->json($result);
+        }
     }
 
 }

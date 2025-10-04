@@ -6,16 +6,32 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class User extends Authenticatable
 {
+    use HasApiTokens;
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    public function carts() { return $this->hasMany(Cart::class); }
-    public function address() { return $this->hasMany(UserAddress::class); }
-    public function rol() { return $this->hasOne(Role::class); }
-    public function favoriteProducts() { return $this->belongsToMany(Product::class, 'user_favorite_products'); }
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+    public function address()
+    {
+        return $this->hasMany(UserAddress::class);
+    }
+    public function rol()
+    {
+        return $this->hasOne(Role::class);
+    }
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'user_favorite_products');
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -78,7 +94,10 @@ class User extends Authenticatable
 
     public function setEmailAttribute($value)
     {
+        $normalized = strtolower(trim($value));
+
         $this->attributes['email'] = encrypt($value);
+        $this->attributes['email_hash'] = hash_hmac('sha256', $normalized, config('app.key'));
     }
 
     public function getEmailAttribute($value)
