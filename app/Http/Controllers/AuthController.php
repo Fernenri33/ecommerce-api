@@ -6,6 +6,7 @@ use App\Models\User;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Str;
 
 class AuthController extends Controller
 {
@@ -62,24 +63,26 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            // $validated = $request->validate([
-            //     'email' => 'required|email',
-            //     'password' => 'required',
-            // ], [
-            //     'email.required' => 'El email es obligatorio',
-            //     'email.email' => 'El email debe ser válido',
-            //     'password.required' => 'La contraseña es obligatoria',
-            // ]);
+            $validated = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ], [
+                'email.required' => 'El email es obligatorio',
+                'email.email' => 'El email debe ser válido',
+                'password.required' => 'La contraseña es obligatoria',
+            ]);
 
-            $user = User::find(id: 3);
+            $normalized = Str::lower(trim($validated['email']));
+            $hash = hash_hmac('sha256', $normalized, config('app.key'));
 
-            // if (!$user || !Hash::check($validated['password'], $user->password)) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Credenciales incorrectas'
-            //     ], 401);
-            // }
+            $user = User::where('email_hash', $hash)->first();
 
+            if (!$user || !Hash::check($validated['password'], $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Credenciales incorrectas'
+                ], 401);
+            }
 
             $user->tokens()->delete();
             $token = $user->createToken('auth_token')->plainTextToken;
