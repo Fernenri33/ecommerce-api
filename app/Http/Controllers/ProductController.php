@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\ProductDTO;
+use App\DTOs\ProductUpdateDTO;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 
@@ -44,11 +45,11 @@ class ProductController extends Controller
             return response()->json($result);
         }
     }
-    public function update(Request $request)
+    public function update(Request $request, int $id)
     {
         try {
-            $productDTO = ProductDTO::fromRequest($request);
-            $result = $this->productService->createProduct($productDTO);
+            $productDTO = ProductUpdateDTO::fromRequest($request, $id);
+            $result = $this->productService->updateProduct($id, $productDTO);
             return response()->json($result);
 
         } catch (\InvalidArgumentException $e) {

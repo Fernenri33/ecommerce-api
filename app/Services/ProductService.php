@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\DTOs\ProductDTO;
+use App\DTOs\ProductUpdateDTO;
 use App\Models\Product;
 
 class ProductService extends BaseService{
@@ -12,10 +13,13 @@ class ProductService extends BaseService{
         parent::__construct(new Product, 'producto');
     }
     public function getAllProducts (){
-        return $this ->getAll(10);
+        return $this ->getAll(20);
     }
     public function createProduct(ProductDTO $productDTO){  
         return $this->create($productDTO->toArray());
+    }
+    public function updateProduct($id, ProductUpdateDTO $productUpdateDTO){
+        return $this->update($id, $productUpdateDTO->toArray());
     }
     public function deleteProduct($id){
         return $this->delete($id);

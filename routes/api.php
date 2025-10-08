@@ -8,6 +8,8 @@ use App\Http\Controllers\AuthController;
 Route::post('login', [AuthController::class, 'login']); // /api/login
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('products', ProductController::class);
-    Route::apiResource('roles',RolController::class);
+    //Route::apiResource('products', ProductController::class);
+    //Route::apiResource('roles',RolController::class);
 });
+Route::apiResource('roles',RolController::class);
+Route::apiResource('products', ProductController::class);
