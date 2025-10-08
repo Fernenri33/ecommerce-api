@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 
 Route::post('login', [AuthController::class, 'login']); // /api/login
 
+// Rutas protegidas por login
 Route::middleware('auth:sanctum')->group(function () {
     //Route::apiResource('products', ProductController::class);
     //Route::apiResource('roles',RolController::class);
