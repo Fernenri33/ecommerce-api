@@ -13,42 +13,56 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
+            // Primero normalizar y hashear el email para validar
+            $emailToValidate = $request->input('email');
+            $normalized = Str::lower(trim($emailToValidate));
+            $hash = hash_hmac('sha256', $normalized, config('app.key'));
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
+                'email' => [
+                    'required',
+                    'email',
+                    function ($attribute, $value, $fail) use ($hash) {
+                        if (User::where('email_hash', $hash)->exists()) {
+                            $fail('El email ya está registrado');
+                        }
+                    }
+                ],
                 'password' => 'required|string|min:8|confirmed',
-                'rol_id' => 'required'
             ], [
                 'name.required' => 'El nombre es obligatorio',
+                'last_name.required' => 'El apellido es obligatorio',
                 'email.required' => 'El email es obligatorio',
                 'email.email' => 'El email debe ser válido',
-                'email.unique' => 'El email ya está registrado',
                 'password.required' => 'La contraseña es obligatoria',
                 'password.min' => 'La contraseña debe tener al menos 8 caracteres',
                 'password.confirmed' => 'Las contraseñas no coinciden',
-                'rol_id' => 'El rol es obligatorio'
             ]);
-
-            // Reemplazar por servicios de usuario en el futuro
 
             $user = User::create([
                 'name' => $validated['name'],
                 'last_name' => $validated['last_name'],
                 'email' => $validated['email'],
-                'rol_id' => $validated['rol_id'],
-                'password' => $validated['password']
+                'email_hash' => $hash,
+                'rol_id' => 3,
+                'password' => Hash::make($validated['password'])
             ]);
 
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken(
+                'auth_token',
+                ['*'],
+                now()->addDays(7)
+            )->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Usuario registrado exitosamente',
                 'content' => [
-                    'user' => $user,
                     'token' => $token,
                     'token_type' => 'Bearer',
+                    'expires_in' => 7 * 24 * 60 * 60,
                 ]
             ], 201);
 
@@ -60,6 +74,7 @@ class AuthController extends Controller
             ], 422);
         }
     }
+
     public function login(Request $request)
     {
         try {
@@ -85,15 +100,20 @@ class AuthController extends Controller
             }
 
             $user->tokens()->delete();
-            $token = $user->createToken('auth_token')->plainTextToken;
+
+            $token = $user->createToken(
+                'auth_token',
+                ['*'],
+                now()->addDays(7)
+            )->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Login exitoso',
                 'content' => [
-                    //'user' => $user,
                     'token' => $token,
                     'token_type' => 'Bearer',
+                    'expires_in' => 7 * 24 * 60 * 60,
                 ]
             ]);
 
