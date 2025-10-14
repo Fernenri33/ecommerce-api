@@ -6,6 +6,8 @@ use App\DTOs\ProductDTO;
 use App\DTOs\ProductUpdateDTO;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; // Agregar esto
+
 
 class ProductController extends Controller
 {
@@ -47,7 +49,9 @@ class ProductController extends Controller
     }
     public function update(Request $request, int $id)
     {
+
         try {
+            //$this->authorize('manage-products');
             $productDTO = ProductUpdateDTO::fromRequest($request, $id);
             $result = $this->productService->updateProduct($id, $productDTO);
             return response()->json($result);

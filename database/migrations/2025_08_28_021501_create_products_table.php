@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId("unit_id")->constrained("units");
             $table->enum('status', ['active', 'inactive', 'hidden'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

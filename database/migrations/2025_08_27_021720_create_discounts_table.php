@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal("cuantity",5,2);
             $table->string('status')->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

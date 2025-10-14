@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId("courier")->nullable()->constrained("users");
             $table->dateTime('delivery_date')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

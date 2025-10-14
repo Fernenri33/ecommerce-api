@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId("product_id")->constrained("products");
             $table->foreignId("order_id")->constrained("orders");
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
