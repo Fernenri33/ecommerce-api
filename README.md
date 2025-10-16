@@ -16,7 +16,7 @@
 ### Base de datos
 
 1. Crear una base de datos en MySql llamada ``ecommerce_tankesv``
-2. Ingresar al archivo ``.env`` ubicado en ``tankesv-api\.env``
+2. Ingresar al archivo ``.env`` ubicado en ``ecommerce-api\.env``
 3. Cambiar este bloque de codigo por las credenciales MySql
 
 ``` php
