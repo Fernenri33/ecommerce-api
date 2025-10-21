@@ -46,7 +46,7 @@ class AuthController extends Controller
                 'last_name' => $validated['last_name'],
                 'email' => $validated['email'],
                 'email_hash' => $hash,
-                'rol_id' => 3,
+                'rol_id' => 2,
                 'password' => Hash::make($validated['password'])
             ]);
 
@@ -123,6 +123,38 @@ class AuthController extends Controller
                 'message' => 'Errores de validación',
                 'errors' => $e->errors()
             ], 422);
+        }
+    }
+    public function logout(Request $request){
+        try {
+            $user = $request->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No autenticado'
+                ], 401);
+            }
+
+            // Revoca el token usado en la petición (Sanctum)
+            $current = $user->currentAccessToken();
+            if ($current) {
+                $current->delete();
+            } else {
+                // fallback: eliminar todos los tokens del usuario
+                $user->tokens()->delete();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout exitoso'
+            ], 200);
+        } catch (\Throwable $e) {
+            \Log::error('Error en logout', ['err' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cerrar sesión'
+            ], 500);
         }
     }
 }

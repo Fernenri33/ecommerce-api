@@ -92,7 +92,7 @@ abstract class BaseService{
     public function findByName (string $name, $perPage = 20){
         try {
 
-            $items = $this->model::where('name','=', $name)->paginate($perPage);
+            $items = $this->model::where('name', 'LIKE', "%{$name}%")->paginate($perPage);
             
             if ($items->isEmpty()) {
                 return ResponseHelper::notFound($this->resourceName);

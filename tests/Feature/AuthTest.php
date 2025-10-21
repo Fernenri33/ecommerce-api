@@ -65,4 +65,111 @@ class AuthTest extends TestCase
         $response->assertStatus(401)->assertJsonStructure(['message']);
         dump($json);
     }
+    public function test_user_can_logout(): void
+    {
+        $rol = Role::factory()->create([
+            'name' => 'admin',
+            'description' => 'admin'
+        ]);
+
+        $user = User::factory()->create([
+            'email' => 'test@ejemplo.com',
+            'password' => Hash::make('password123'),
+            'name' => 'Admin',
+            'last_name' => 'test',
+            'rol_id' => $rol->id
+        ]);
+
+        $login = $this->postJson('api/login', [
+            'email' => 'test@ejemplo.com',
+            'password' => 'password123',
+        ]);
+
+        $login->assertStatus(200);
+
+        $jsonLogin = $login->json();
+        $token = data_get($jsonLogin, 'content.token');
+        $this->assertNotEmpty($token);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->postJson('api/logout');
+
+        $response->assertStatus(200)->assertJson(['message' => 'Logout exitoso']);
+
+        $json = $response->json();
+
+        // Verificar que los tokens del usuario fueron revocados
+        $this->assertEquals(0, $user->tokens()->count());
+
+        dump($json);
+    }
+    public function test_user_can_register(){
+
+        $rol = Role::factory()->create([
+            'name' => 'customer',
+            'description' => 'customer',
+            'id' => 2
+        ]);
+
+        $response = $this->postJson('api/register', [
+            'name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'test@ejemplo.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123'
+        ]);
+        $response->assertStatus(201)->assertJson(['message' => 'Usuario registrado exitosamente']);
+        $json = $response->json();
+        dump($json);
+        
+    }
+    public function test_user_cannot_register_without_password_confirmation(){
+
+        $rol = Role::factory()->create([
+            'name' => 'customer',
+            'description' => 'customer',
+            'id' => 2
+        ]);
+
+        $response = $this->postJson('api/register', [
+            'name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'test@ejemplo.com',
+            'password' => 'password123',
+            'password_confirmation' => 'otrapassword'
+        ]);
+        $response->assertStatus(422)->assertJson(['message' => 'Errores de validación']);
+        $json = $response->json();
+        dump($json);
+        
+    }
+        public function test_user_cannot_register_with_same_email(){
+
+        $rol = Role::factory()->create([
+            'name' => 'customer',
+            'description' => 'customer',
+            'id' => 2
+        ]);
+
+        $user1 = $this->postJson('api/register', [
+            'name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'test@ejemplo.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123'
+        ]);
+
+        $response = $this->postJson('api/register', [
+            'name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'test@ejemplo.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123'
+        ]);
+        $response->assertStatus(422)->assertJson(['message' => 'Errores de validación']);
+        $json = $response->json();
+        dump($json);
+        
+    }
 }
