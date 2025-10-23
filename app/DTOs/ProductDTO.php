@@ -18,6 +18,7 @@ class ProductDTO
     public readonly int $warehouse_quantity;
     public readonly int $unit_id;
     public readonly Status $status;
+    public readonly ?float $unit_cost;
 
     public function __construct(array $data)
     {
@@ -31,6 +32,9 @@ class ProductDTO
         $this->warehouse_quantity = (int) $data['warehouse_quantity'];
         $this->unit_id = (int) $data['unit_id'];
         $this->status = Status::from($data['status'] ?? 'active');
+        $this->unit_cost = array_key_exists('unit_cost', $data) && $data['unit_cost'] !== null
+            ? (float) $data['unit_cost']
+            : null;
     }
 
     public static function fromRequest(Request $request): self
@@ -54,6 +58,7 @@ class ProductDTO
             'warehouse_quantity' => $this->warehouse_quantity,
             'unit_id' => $this->unit_id,
             'status' => $this->status->value,
+            'unit_cost' => $this->unit_cost,
         ];
     }
 
@@ -68,6 +73,7 @@ class ProductDTO
             'warehouse_quantity' => 'required|integer|min:0',
             'unit_id' => 'required|integer|exists:units,id',
             'status' => 'nullable|in:active,inactive,hidden',
+            'unit_cost' => 'nullable|numeric|min:0',
         ], [
             'name.required' => 'El nombre del producto es obligatorio',
             'name.max' => 'El nombre no puede exceder 100 caracteres',
@@ -82,6 +88,8 @@ class ProductDTO
             'unit_id.required' => 'La unidad de medida es obligatoria',
             'unit_id.exists' => 'La unidad de medida seleccionada no existe',
             'status.in' => 'El estado debe ser: active, inactive o hidden',
+            'unit_cost.numeric' => 'El costo unitario debe ser un número',
+            'unit_cost.min' => 'El costo unitario no puede ser negativo',
         ]);
 
         if ($validator->fails()) {

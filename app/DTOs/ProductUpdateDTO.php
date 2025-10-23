@@ -18,6 +18,7 @@ class ProductUpdateDTO
     public readonly ?int $warehouse_quantity;
     public readonly ?int $unit_id;
     public readonly ?Status $status;
+    public readonly ?float $unit_cost; // added
 
     public function __construct(array $data, int $productId)
     {
@@ -31,6 +32,9 @@ class ProductUpdateDTO
         $this->warehouse_quantity = isset($data['warehouse_quantity']) ? (int) $data['warehouse_quantity'] : null;
         $this->unit_id = isset($data['unit_id']) ? (int) $data['unit_id'] : null;
         $this->status = isset($data['status']) ? Status::from($data['status']) : null;
+        $this->unit_cost = array_key_exists('unit_cost', $data) && $data['unit_cost'] !== null
+            ? (float) $data['unit_cost']
+            : null;
     }
 
     public static function fromRequest(Request $request, int $productId): self
@@ -50,6 +54,7 @@ class ProductUpdateDTO
         if ($this->warehouse_quantity !== null) $data['warehouse_quantity'] = $this->warehouse_quantity;
         if ($this->unit_id !== null) $data['unit_id'] = $this->unit_id;
         if ($this->status !== null) $data['status'] = $this->status->value;
+        if ($this->unit_cost !== null) $data['unit_cost'] = $this->unit_cost; // added
         
         return $data;
     }
@@ -67,6 +72,8 @@ class ProductUpdateDTO
             'warehouse_quantity.min' => 'La cantidad en almacén no puede ser negativa',
             'unit_id.exists' => 'La unidad de medida seleccionada no existe',
             'status.in' => 'El estado debe ser: active, inactive o hidden',
+            'unit_cost.numeric' => 'El costo unitario debe ser un número',
+            'unit_cost.min' => 'El costo unitario no puede ser negativo',
         ];
 
         // Solo validar campos que están presentes
@@ -109,6 +116,10 @@ class ProductUpdateDTO
 
         if (array_key_exists('status', $data)) {
             $rules['status'] = 'in:active,inactive,hidden';
+        }
+
+        if (array_key_exists('unit_cost', $data)) {
+            $rules['unit_cost'] = 'nullable|numeric|min:0';
         }
 
         $validator = Validator::make($data, $rules, $messages);

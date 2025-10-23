@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer("available_quantity");
             $table->integer("warehouse_quantity");
             $table->foreignId("unit_id")->constrained("units");
-            $table->enum('status', ['active', 'inactive', 'hidden'])->default('active');
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->decimal("unit_cost",10,2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
