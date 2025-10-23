@@ -7,7 +7,7 @@ use App\DTOs\CategoryUpdateDTO;
 use App\Models\Category;
 
 class CategoryService extends BaseService{
-    public function __construc(){
+    public function __construct(){
         parent::__construct(new Category,'categoría');
     }
     public function getAllCategories(){
@@ -22,7 +22,7 @@ class CategoryService extends BaseService{
     public function createCategory(CategoryDTO $categoyDTO){
         return $this->create($categoyDTO->toArray());
     }
-    public function updateCategory(CategoryUpdateDTO $categoryUpdateDTO){
-        return $this->update($categoryUpdateDTO->toArray());
+    public function updateCategory($id, CategoryUpdateDTO $categoryUpdateDTO){
+        return $this->update($id, $categoryUpdateDTO->toArray());
     }
 }
