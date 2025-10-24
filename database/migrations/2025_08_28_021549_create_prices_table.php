@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string("name",100);
             $table->foreignId("product_id")->constrained("products");
             $table->text("description");
-            $table->integer("cuantity");
+            $table->integer("quantity");
             $table->decimal("price",10,2);
-            $table->foreignId('discount_id')->constrained('discounts');
+            $table->foreignId('discount_id')->nullable()->constrained('discounts');
             $table->string('status')->default('active');
             $table->timestamps();
             $table->softDeletes();

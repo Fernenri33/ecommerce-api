@@ -18,7 +18,7 @@ class ProductUpdateDTO
     public readonly ?int $warehouse_quantity;
     public readonly ?int $unit_id;
     public readonly ?Status $status;
-    public readonly ?float $unit_cost; // added
+    public readonly ?float $unit_cost;
 
     public function __construct(array $data, int $productId)
     {

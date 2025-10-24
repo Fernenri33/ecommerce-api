@@ -31,7 +31,8 @@ class Product extends Model
         'available_quantity',
         'warehouse_quantity',
         'unit_id',
-        'status'
+        'status',
+        'unit_cost'
     ];
     protected $casts = [ 
         'Status' => Status::class 
