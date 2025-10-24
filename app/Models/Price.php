@@ -9,10 +9,10 @@ use Status;
 class Price extends Model
 {
     use HasFactory;
-    public function products(){
+    public function product(){
         return $this->belongsTo(Product::class);
     }
-    public function discounts(){
+    public function discount(){
         return $this->belongsTo(Discount::class);
     }
     public function cartItems(){
@@ -22,14 +22,14 @@ class Price extends Model
         return $this->belongsToMany(Cart::class, 'cart_items');
     }
     protected $table = 'prices';
-    protected $primarykey = 'id';
+    protected $primaryKey = 'id';
     protected $fillable = [
         'name',
         'product_id',
         'description',
-        'cuantity',
+        'quantity',
         'price',
-        'discount',
+        'discount_id',
         'status'
     ];
     protected $casts =[
