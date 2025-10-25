@@ -26,6 +26,6 @@ class PriceService extends BaseService{
         return $this->update($id, $priceUpdateDTO->toArray());
     }
     public function deletePrice($id){
-        return $this->deletePrice($id);
+        return $this->delete($id);
     }
 }

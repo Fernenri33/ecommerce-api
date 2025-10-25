@@ -17,6 +17,8 @@ class Discount extends Model
         'cuantity',
         'status'
     ];
-    protected $casts = ['status'=>Status::class];
+    protected $casts = [ 
+        'Status' => Status::class 
+    ];
 
 }
