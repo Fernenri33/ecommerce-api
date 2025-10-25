@@ -119,7 +119,7 @@ class PriceTest extends TestCase
             'quantity'    => 1,
             'price'       => 25.5,
             'discount_id' => $discount->id,
-            // 'status'    => 'active', // opcional; el DTO usa default 'active'
+            'status'    => 'active',
         ];
 
         // Lo que el servicio devolvería (ajústalo a tu caso real si devuelves más campos)
