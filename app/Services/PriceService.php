@@ -7,6 +7,9 @@ use App\DTOs\PriceUpdateDTO;
 use App\Models\Price;
 
 class PriceService extends BaseService{
+
+    protected $with = ['product','discount'];
+
     public function __construct(){
         parent::__construct(new Price, 'precio');
     }

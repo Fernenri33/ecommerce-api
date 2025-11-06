@@ -7,7 +7,7 @@ use App\Models\Product;
 
 class ProductService extends BaseService{
 
-    protected $with = ['unit:name,description'];
+    protected $with = ['unit'];
 
     public function __construct(){
         parent::__construct(new Product, 'producto');

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserAddressesService extends BaseService
 {
-    protected $with = ['user:name,last_name'];
+    protected $with = ['user'];
     public function __construct()
     {
         parent::__construct(new UserAddress, 'Direcciones');

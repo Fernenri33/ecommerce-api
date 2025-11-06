@@ -23,7 +23,7 @@ class PriceController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', arguments: Price::class);
+        $this->authorize( 'viewAny', arguments: Price::class);
         $name = $request->query('name');
         $result = (!empty($name)) ? $this->priceService->findPriceByName($name) : $this->priceService->getAllPrices();
 
@@ -71,7 +71,7 @@ class PriceController extends Controller
      */
     public function destroy($id)
     {
-         $this->authorize('detele', arguments: Price::class);
+         $this->authorize('delete', arguments: Price::class);
          $result = $this->priceService->deletePrice($id);
          return response()->json($result);
 

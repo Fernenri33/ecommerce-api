@@ -53,6 +53,9 @@ class ProductTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonCount(3);
+
+        $json = $response->json();
+        dump($json);
     }
 
     public function test_index_unauthorized_returns_403(): void

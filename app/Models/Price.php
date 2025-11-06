@@ -32,7 +32,7 @@ class Price extends Model
         'discount_id',
         'status'
     ];
-    protected $casts =[
-        'status'=>Status::class
+    protected $casts = [ 
+        'Status' => Status::class 
     ];
 }

@@ -9,10 +9,10 @@ use CartStatus;
 class Cart extends Model
 {
     use HasFactory;
-    public function users(){
+    public function user(){
         return $this->belongsTo(User::class);
     }
-    public function cartItems(){
+    public function cartItem(){
         return $this->hasMany(CartItem::class);
     }
     public function prices(){
