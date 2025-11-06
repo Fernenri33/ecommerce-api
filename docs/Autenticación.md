@@ -1,6 +1,6 @@
 # Autenticación
 
-Esta guía resume los endpoints de autenticación que estás testeando en **Laravel** (con **Sanctum**). Incluye ejemplos de uso en **JavaScript (fetch)** y respuestas **JSON** listas para copiar y pegar.
+Esta guía resume los endpoints de autenticación que estás testeando en **Laravel** (con **Sanctum**). Incluye ejemplos de uso en **JavaScript (fetch)** y respuestas **JSON**
 
 > **Formato**: todos los endpoints son **POST** y aceptan/retornan **JSON**.
 
