@@ -6,12 +6,12 @@ use App\Models\User;
 
 class ProductPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return true; // Todos pueden ver
     }
 
-    public function view(User $user): bool 
+    public function view(?User $user): bool 
     {
         return true;
     }

@@ -21,15 +21,15 @@ class CartPolicy
      */
     public function view(User $user, Cart $cart): bool
     {
-        return $user->id == $cart->user_id;
+        return $user->id === $cart->user_id;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Cart $cart): bool
+    public function create(User $user): bool
     {
-        return $user->id == $cart->user_id;
+        return true;
 
     }
 
@@ -38,7 +38,7 @@ class CartPolicy
      */
     public function update(User $user, Cart $cart): bool
     {
-        return $user->id == $cart->user_id;
+        return $user->id === $cart->user_id;
     }
 
     /**
@@ -46,7 +46,7 @@ class CartPolicy
      */
     public function delete(User $user, Cart $cart): bool
     {
-        return $user->id == $cart->user_id;
+        return $user->id === $cart->user_id;
     }
 
     /**

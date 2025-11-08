@@ -2,28 +2,25 @@
 
 namespace App\Policies;
 
+use App\Models\Discount;
 use App\Models\User;
-use App\Models\UserAddress;
 use Illuminate\Auth\Access\Response;
 
-class UserAddressPolicy
+class DiscountPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, UserAddress $userAddress): bool
+    public function view(User $user, Discount $discount): bool
     {
-        if($userAddress->user_id === $user->id ||  $user->rol->name === 'admin'){
-            return true;
-        }
         return false;
     }
 
@@ -32,37 +29,37 @@ class UserAddressPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return  $user->rol->name === 'admin';
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, UserAddress $userAddress): bool
+    public function update(User $user, Discount $discount): bool
     {
-        return $user->id === $userAddress->user_id;
+        return  $user->rol->name === 'admin';
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, UserAddress $userAddress): bool
+    public function delete(User $user, Discount $discount): bool
     {
-        return $user->id === $userAddress->user_id;
+        return  $user->rol->name === 'admin';
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, UserAddress $userAddress): bool
+    public function restore(User $user, Discount $discount): bool
     {
-        return $user->rol_id === 1;
+        return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, UserAddress $userAddress): bool
+    public function forceDelete(User $user, Discount $discount): bool
     {
         return false;
     }
