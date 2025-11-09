@@ -25,7 +25,7 @@ class ResponseHelper
     {
         return [
             'success' => false,
-            'message' => "No se encontró el {$resource}",
+            'message' => "No se encontró {$resource}",
             'content' => null
         ];
     }

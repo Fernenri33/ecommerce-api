@@ -24,7 +24,7 @@ abstract class BaseService
 
             if ($item) {
                 return ResponseHelper::success(
-                    "{$this->resourceName} encontrado",
+                    "{$this->resourceName} se ha encontrado",
                     $item
                 );
             }
