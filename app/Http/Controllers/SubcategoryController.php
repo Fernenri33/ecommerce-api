@@ -6,7 +6,6 @@ use App\DTOs\SubcategoryDTO;
 use App\DTOs\SubcategoryUpdateDTO;
 use App\Models\Subcategory;
 use App\Services\SubcategoryService;
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
