@@ -15,7 +15,6 @@ class CategoryController extends Controller
     protected $categoryService;
 
     public function __construct(CategoryService $categoryService){
-        // CORRIGE ESTO: tenías $this->$categoryService (con $ extra)
         $this->categoryService = $categoryService;
     }
     

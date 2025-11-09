@@ -53,7 +53,7 @@ class CategoryPolicy
      */
     public function restore(User $user, Category $category): bool
     {
-        return $user->rol->name === 'admin';
+        return false;
     }
 
     /**
@@ -61,6 +61,6 @@ class CategoryPolicy
      */
     public function forceDelete(User $user, Category $category): bool
     {
-        return $user->rol->name === 'admin';
+        return false;
     }
 }

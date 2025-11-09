@@ -22,7 +22,7 @@ class SubcategoryController extends Controller
      */
     public function index(Request $request)
     {
-        //$this->authorize('viewAny',Subcategory::class);
+        $this->authorize('viewAny',Subcategory::class);
 
         $name = $request->query('name');
         $res = (!empty($name)) ? $this->subcategoryService
@@ -49,7 +49,7 @@ class SubcategoryController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('view',SubcategoryController::class);
+        $this->authorize('view',Subcategory::class);
 
         $res = $this->subcategoryService->findSubcategoryById($id);
         return response()->json($res);

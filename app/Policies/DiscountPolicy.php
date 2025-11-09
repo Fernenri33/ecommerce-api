@@ -19,9 +19,9 @@ class DiscountPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Discount $discount): bool
+    public function view(?User $user, Discount $discount): bool
     {
-        return false;
+        return true;
     }
 
     /**
