@@ -18,22 +18,22 @@ class ProductPolicy
 
     public function create(User $user): bool
     {
-        return $user->rol_id === 1;
+        return $user->rol->name === 'admin';
     }
 
     public function update(User $user): bool 
     {
-        return $user->rol_id === 1;
+        return $user->rol->name === 'admin';
     }
 
     public function delete(User $user): bool
     {
-        return $user->rol_id === 1;
+        return $user->rol->name === 'admin';
     }
 
     public function restore(User $user): bool
     {
-        return $user->rol_id === 1;
+        return false;
     }
 
     public function forceDelete(User $user): bool

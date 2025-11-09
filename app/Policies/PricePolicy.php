@@ -29,7 +29,7 @@ class PricePolicy
      */
     public function create(User $user): bool
     {
-        return $user->rol_id === 1;
+        return $user->rol->name === 'admin';
     }
 
     /**
@@ -37,7 +37,7 @@ class PricePolicy
      */
     public function update(User $user, Price $price): bool
     {
-        return $user->rol_id === 1;
+        return $user->rol->name === 'admin';
     }
 
     /**
@@ -45,7 +45,7 @@ class PricePolicy
      */
     public function delete(User $user, Price $price): bool
     {
-        return $user->rol_id === 1;
+        return $user->rol->name === 'admin';
     }
 
     /**
@@ -53,7 +53,7 @@ class PricePolicy
      */
     public function restore(User $user, Price $price): bool
     {
-        return $user->rol_id === 1;
+        return $user->rol->name === 'admin';
     }
 
     /**
