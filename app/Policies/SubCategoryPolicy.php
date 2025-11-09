@@ -19,7 +19,7 @@ class SubCategoryPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Subcategory $subcategory): bool
+    public function view(?User $user): bool
     {
         return true;
     }
