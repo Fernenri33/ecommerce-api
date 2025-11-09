@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Cart;
+use App\Models\Shipment;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class CartPolicy
+class ShipmentPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,11 +19,8 @@ class CartPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Cart $cart): bool
+    public function view(User $user, Shipment $shipment): bool
     {
-        if($cart->user_id === $user->id ||  $user->rol->name === 'admin'){
-            return true;
-        }
         return false;
     }
 
@@ -32,30 +29,29 @@ class CartPolicy
      */
     public function create(User $user): bool
     {
-        return true;
-
+        return false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Cart $cart): bool
+    public function update(User $user, Shipment $shipment): bool
     {
-        return $user->id === $cart->user_id;
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Cart $cart): bool
+    public function delete(User $user, Shipment $shipment): bool
     {
-        return $user->id === $cart->user_id;
+        return false;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Cart $cart): bool
+    public function restore(User $user, Shipment $shipment): bool
     {
         return false;
     }
@@ -63,7 +59,7 @@ class CartPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Cart $cart): bool
+    public function forceDelete(User $user, Shipment $shipment): bool
     {
         return false;
     }

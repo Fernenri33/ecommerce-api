@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Services\CartService;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    use Authenticatable;
     protected $cartService;
     public function __construct(CartService $cartService){
         $this->cartService = $cartService;
@@ -18,7 +20,7 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view', arguments: Cart::class);
+        $this->authorize('view',Cart::class);
         $cartId = $request->query('cartId');
         $result = (!empty($cartId)) ? $this->cartService->findCartsByUser($cartId) : $this->cartService->getAllCarts();
         return response()->json($result);
