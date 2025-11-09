@@ -25,4 +25,7 @@ class CategoryService extends BaseService{
     public function updateCategory($id, CategoryUpdateDTO $categoryUpdateDTO){
         return $this->update($id, $categoryUpdateDTO->toArray());
     }
+    public function deleteCategory($id){
+        return $this->delete($id);
+    }
 }
