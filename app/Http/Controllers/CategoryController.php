@@ -6,12 +6,12 @@ use App\DTOs\CategoryDTO;
 use App\DTOs\CategoryUpdateDTO;
 use App\Models\Category;
 use App\Services\CategoryService;
-use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    use Authenticatable;
+    use AuthorizesRequests;
     protected $categoryService;
 
     public function __construct(CategoryService $categoryService){

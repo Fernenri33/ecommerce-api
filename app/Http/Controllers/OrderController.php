@@ -6,12 +6,12 @@ use App\DTOs\OrderDTO;
 use App\DTOs\OrderUpdateDTO;
 use App\Models\Order;
 use App\Services\OrderService;
-use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    use Authenticatable;
+    use AuthorizesRequests;
     protected $orderService;
     public function __construct(OrderService $orderService){
         $this->orderService = $orderService;

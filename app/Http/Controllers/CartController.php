@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Services\CartService;
-use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    use Authenticatable;
+    use AuthorizesRequests;
     protected $cartService;
     public function __construct(CartService $cartService){
         $this->cartService = $cartService;

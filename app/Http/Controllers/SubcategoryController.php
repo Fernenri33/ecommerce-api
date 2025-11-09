@@ -7,11 +7,12 @@ use App\DTOs\SubcategoryUpdateDTO;
 use App\Models\Subcategory;
 use App\Services\SubcategoryService;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class SubcategoryController extends Controller
 {
-    use Authenticatable;
+    use AuthorizesRequests;
     protected $subcategoryService;
 
     public function __construct(SubcategoryService $subcategoryService){
@@ -22,7 +23,7 @@ class SubcategoryController extends Controller
      */
     public function index(Request $request)
     {
-        //$this->authorize('viewAny',Subcategory::class);
+        $this->authorize('viewAny',Subcategory::class);
 
         $name = $request->query('name');
         $res = (!empty($name)) ? $this->subcategoryService
@@ -49,7 +50,7 @@ class SubcategoryController extends Controller
      */
     public function show($id)
     {
-        //$this->authorize('view',Subcategory::class);
+        $this->authorize('view',Subcategory::class);
 
         $res = $this->subcategoryService->findSubcategoryById($id);
         return response()->json($res);
@@ -71,8 +72,10 @@ class SubcategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Subcategory $subcategory)
+    public function destroy($id)
     {
-        //
+        $this->authorize('delete',Subcategory::class);
+
+        $res = $this->subcategoryService->deleteSubcategory($id);
     }
 }
