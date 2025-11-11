@@ -6,7 +6,7 @@ namespace App\DTOs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
-use CartStatus;
+use App\Enums\CartStatus;
 
 class CartDTO
 {
