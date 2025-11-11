@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use CartStatus;
+use App\Enums\CartStatus;
 
 class Cart extends Model
 {

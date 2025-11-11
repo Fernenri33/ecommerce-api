@@ -9,10 +9,10 @@ class ProductSubcategory extends Model
 {
     use HasFactory;
     public function subcategory(){
-        $this->belongsTo(Subcategory::class);
+        return $this->belongsTo(Subcategory::class);
     }
     public function product(){
-        $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class);
     }
     protected $table = 'product_subcategories';
     protected $primarykey = 'id';

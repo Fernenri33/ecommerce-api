@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Enums;
 enum ShipmentStatus:string{
     case Pending = 'pending';
     case Delivered = 'delivered';

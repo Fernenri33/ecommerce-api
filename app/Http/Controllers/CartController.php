@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\CartDTO;
+use App\DTOs\CartUpdateDTO;
 use App\Models\Cart;
 use App\Services\CartService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -16,11 +18,12 @@ class CartController extends Controller
     }
     /**
      * Display a listing of the resource.
-     * Pasa como parametro el  id del usuario dueño del carrito o devuelve todos los carritos
+     * Pasa como parametro el id del usuario dueño del carrito o devuelve todos los carritos
      */
     public function index(Request $request)
     {
         $this->authorize('view',Cart::class);
+
         $cartId = $request->query('cartId');
         $result = (!empty($cartId)) ? $this->cartService->findCartsByUser($cartId) : $this->cartService->getAllCarts();
         return response()->json($result);
@@ -31,30 +34,39 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('create',Cart::class);
+
+        $cartDTO = CartDTO::fromRequest($request);
+        $res = $this->cartService->createCart($cartDTO);
+        return response()->json($res);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Cart $cart)
+    public function show($id)
     {
-        //
+        $this->authorize('view',Cart::class);
+        $res = $this->cartService->find($id);
+        return response()->json($res);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cart $cart)
+    public function update(Request $request, $id)
     {
-        //
+        $this->authorize('update',Cart::class);
+        $cartUpdateDTO = CartUpdateDTO::fromRequest($request);
+        $res = $this->cartService->updateCart($id,$cartUpdateDTO);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cart $cart)
+    public function destroy($id)
     {
-        //
+        $this->authorize('delete',Cart::class);
+        $res = $this->cartService->deleteCart($id);
     }
 }

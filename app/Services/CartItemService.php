@@ -7,6 +7,7 @@ use App\DTOs\CartItemUpdateDTO;
 use App\Helpers\ResponseHelper;
 use App\Models\Cart;
 use App\Models\CartItem;
+use DB;
 
 Class CartItemService extends BaseService{
     protected $with = ['cart'];
@@ -23,7 +24,7 @@ Class CartItemService extends BaseService{
             $cart = Cart::find($cartId);
             if($cart->isEmpty()){
                 return ResponseHelper::notFound(
-                    "Item"
+                    "Carrito"
                 );
             }
             $items = CartItem::where('cart_id', '=', $cartId)->get();
@@ -36,15 +37,61 @@ Class CartItemService extends BaseService{
                 $items
             );
         } catch(\Exception){
-
+            return ResponseHelper::error("Ha ocurrido un error");
         }
     }
-    public function createCartItem(CartItemDTO $cartItemDTO){
-        return $this->create($cartItemDTO->toArray());
-    }
-    public function updateCartItem($id, CartItemUpdateDTO $cartItemUpdateDTO){
-        return $this->update($id, $cartItemUpdateDTO->toArray());
-    }
+    public function createCartItem(CartItemDTO $dto)
+{
+    return DB::transaction(function () use ($dto) {
+        $cartId  = (int) $dto->cart_id;
+        $priceId = (int) $dto->price_id;
+        $qty     = max(1, (int) ($dto->quantity ?? 1));
+
+        // Bloquea posibles filas del mismo (cart, price) para evitar carreras
+        $existing = CartItem::query()
+            ->where('cart_id', $cartId)
+            ->where('price_id', $priceId)
+            ->lockForUpdate()
+            ->first();
+
+        if ($existing) {
+            // Incrementa cantidad en la MISMA fila
+            $existing->quantity = (int) $existing->quantity + $qty;
+            $existing->save();
+
+            return $existing->fresh(['price.product']);
+        }
+
+        // Si no existe, crea la fila
+        $item = CartItem::create([
+            'cart_id'   => $cartId,
+            'price_id'  => $priceId,
+            'quantity'  => $qty,
+            // otros campos si tienes (currency, unit_price snapshot, etc.)
+        ]);
+
+        return $item->load('price.product');
+    });
+}
+    public function updateCartItem($id, CartItemUpdateDTO $dto)
+{
+    return DB::transaction(function () use ($id, $dto) {
+        $item = CartItem::query()->lockForUpdate()->findOrFail($id);
+
+        // Si quantity <= 0, elimina
+        $qty = (int) ($dto->quantity ?? 0);
+        if ($qty <= 0) {
+            $item->delete();
+            return $item; // o null, según tu contrato
+        }
+
+        $item->quantity = $qty;
+        $item->save();
+
+        return $item->fresh(['price.product']);
+    });
+}
+
     public function deleteCartImtem($id){
         return $this->delete($id);
     }

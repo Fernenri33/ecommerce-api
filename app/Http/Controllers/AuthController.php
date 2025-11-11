@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\CartService;
+use DB;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -41,14 +43,21 @@ class AuthController extends Controller
                 'password.confirmed' => 'Las contraseñas no coinciden',
             ]);
 
+        [$user, $cart] = DB::transaction(function () use ($validated, $hash) {
             $user = User::create([
-                'name' => $validated['name'],
-                'last_name' => $validated['last_name'],
-                'email' => $validated['email'],
+                'name'       => $validated['name'],
+                'last_name'  => $validated['last_name'],
+                'email'      => $validated['email'],
                 'email_hash' => $hash,
-                'rol_id' => 2,
-                'password' => Hash::make($validated['password'])
+                'rol_id'     => 2,
+                'password'   => Hash::make($validated['password']),
             ]);
+
+            // Garantiza UN solo carrito activo por usuario (crea si no existe)
+            $cart = app(CartService::class)->getOrCreateActiveCart($user->id);
+
+            return [$user, $cart];
+        });
 
             $token = $user->createToken(
                 'auth_token',

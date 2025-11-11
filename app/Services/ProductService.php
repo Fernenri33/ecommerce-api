@@ -4,6 +4,7 @@ namespace App\Services;
 use App\DTOs\ProductDTO;
 use App\DTOs\ProductUpdateDTO;
 use App\Models\Product;
+use DB;
 
 class ProductService extends BaseService{
 
@@ -29,5 +30,22 @@ class ProductService extends BaseService{
     }
     public function findProductByName($name){
         return $this->findByName($name);
+    }
+    // Servicios relacionados con Subcategorias
+    public function addSubcategories(int $productId, array $subcategoryIds): Product
+    {
+         return DB::transaction(function () use ($productId,$subcategoryIds) {
+            $product = Product::findOrFail($productId);
+            // valida tenant/tienda y que los IDs existan
+            $product->subcategories()->syncWithoutDetaching($subcategoryIds);
+            return $product->load('subcategories');
+        });
+    }
+    public function removeSubcategory(int $productId, int $subcategoryId): void
+    {
+        DB::transaction(function () use ($productId,$subcategoryId) {
+            Product::findOrFail($productId)
+                ->subcategories()->detach($subcategoryId);
+        });
     }
 }

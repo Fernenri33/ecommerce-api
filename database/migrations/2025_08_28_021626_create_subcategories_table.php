@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("name");
             $table->text("description");
             $table->foreignId("category_id")->constrained("categories");
+            $table->unique(['category_id', 'name']);
             $table->timestamps();
             $table->softDeletes();
         });
