@@ -69,6 +69,7 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Usuario registrado exitosamente',
                 'content' => [
+                    'rol' => $user->rol->name,
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 7 * 24 * 60 * 60,
@@ -120,6 +121,7 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Login exitoso',
                 'content' => [
+                    'rol' => $user->rol->name,
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 7 * 24 * 60 * 60,
