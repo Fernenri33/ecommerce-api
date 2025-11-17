@@ -13,7 +13,8 @@ class CartController extends Controller
 {
     use AuthorizesRequests;
     protected $cartService;
-    public function __construct(CartService $cartService){
+    public function __construct(CartService $cartService)
+    {
         $this->cartService = $cartService;
     }
     /**
@@ -22,10 +23,15 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view',Cart::class);
+        // Policy: usuario autenticado puede ver sus carritos
+        $this->authorize('viewAny', Cart::class);
 
-        $cartId = $request->query('cartId');
-        $result = (!empty($cartId)) ? $this->cartService->findCartsByUser($cartId) : $this->cartService->getAllCarts();
+        // Tomamos el id del usuario autenticado
+        $userId = $request->user()->id;
+
+        // Tu servicio ya está pensado para esto: findCartsByUser($userId)
+        $result = $this->cartService->findCartsByUser($userId);
+
         return response()->json($result);
     }
 
@@ -34,7 +40,7 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create',Cart::class);
+        $this->authorize('create', Cart::class);
 
         $cartDTO = CartDTO::fromRequest($request);
         $res = $this->cartService->createCart($cartDTO);
@@ -46,7 +52,7 @@ class CartController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('view',Cart::class);
+        $this->authorize('view', Cart::class);
         $res = $this->cartService->find($id);
         return response()->json($res);
     }
@@ -56,9 +62,10 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->authorize('update',Cart::class);
+        $this->authorize('update', Cart::class);
         $cartUpdateDTO = CartUpdateDTO::fromRequest($request);
-        $res = $this->cartService->updateCart($id,$cartUpdateDTO);
+        $res = $this->cartService->updateCart($id, $cartUpdateDTO);
+        return response()->json($res);
     }
 
     /**
@@ -66,7 +73,8 @@ class CartController extends Controller
      */
     public function destroy($id)
     {
-        $this->authorize('delete',Cart::class);
+        $this->authorize('delete', Cart::class);
         $res = $this->cartService->deleteCart($id);
+        return response()->json($res);
     }
 }

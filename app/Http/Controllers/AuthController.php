@@ -43,21 +43,21 @@ class AuthController extends Controller
                 'password.confirmed' => 'Las contraseñas no coinciden',
             ]);
 
-        [$user, $cart] = DB::transaction(function () use ($validated, $hash) {
-            $user = User::create([
-                'name'       => $validated['name'],
-                'last_name'  => $validated['last_name'],
-                'email'      => $validated['email'],
-                'email_hash' => $hash,
-                'rol_id'     => 2,
-                'password'   => Hash::make($validated['password']),
-            ]);
+            [$user, $cart] = DB::transaction(function () use ($validated, $hash) {
+                $user = User::create([
+                    'name' => $validated['name'],
+                    'last_name' => $validated['last_name'],
+                    'email' => $validated['email'],
+                    'email_hash' => $hash,
+                    'rol_id' => 2,
+                    'password' => Hash::make($validated['password']),
+                ]);
 
-            // Garantiza UN solo carrito activo por usuario (crea si no existe)
-            $cart = app(CartService::class)->getOrCreateActiveCart($user->id);
+                // Garantiza UN solo carrito activo por usuario (crea si no existe)
+                $cart = app(CartService::class)->getOrCreateActiveCart($user->id);
 
-            return [$user, $cart];
-        });
+                return [$user, $cart];
+            });
 
             $token = $user->createToken(
                 'auth_token',
@@ -136,10 +136,11 @@ class AuthController extends Controller
             ], 422);
         }
     }
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         try {
             $user = $request->user();
-            
+
             if (!$user) {
                 return response()->json([
                     'success' => false,
@@ -168,4 +169,42 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function me(Request $request)
+    {
+        try {
+            $user = $request->user(); // Sanctum obtiene el usuario desde el token
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No autenticado'
+                ], 401);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuario autenticado',
+                'content' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'last_name' => $user->last_name,
+                    'email' => $user->email,
+                    'rol' => $user->rol->name ?? null,
+                    'roles' => $user->rol ? [$user->rol->name] : [], // por si quieres múltiples
+                    'created_at' => $user->created_at,
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            \Log::error('Error en ME', [
+                'err' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener usuario'
+            ], 500);
+        }
+    }
+
 }

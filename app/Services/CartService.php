@@ -32,29 +32,22 @@ class CartService extends BaseService
     }
     public function findCartsByUser($userId)
     {
-
         try {
-            $user = User::find($userId);
-
-            if ($user->isEmpty()) {
-                return ResponseHelper::notFound(
-                    "usuario"
-                );
-            }
-            $carts = Cart::where('user_id', '=', $userId)->get();
+            $carts = Cart::where('user_id', $userId)
+                ->paginate(20); // 15 items por página por defecto
 
             if ($carts->isEmpty()) {
                 return ResponseHelper::notFound("carritos para el usuario");
             }
+
             return ResponseHelper::success(
                 "Carritos encontrados",
                 $carts
             );
 
         } catch (\Exception $e) {
-            return ResponseHelper::exception("buscar carritos por nombre de usuario", $e);
+            return ResponseHelper::exception("buscar carritos por usuario", $e);
         }
-
     }
     public function createCart(CartDTO $cartDTO)
     {
@@ -68,7 +61,8 @@ class CartService extends BaseService
     {
         return $this->delete($id);
     }
-    public function getOrCreateActiveCart(int $userId): Cart{
+    public function getOrCreateActiveCart(int $userId): Cart
+    {
         return DB::transaction(function () use ($userId) {
             // Bloquea carritos del usuario para evitar carreras
             $cart = Cart::query()
@@ -77,11 +71,12 @@ class CartService extends BaseService
                 ->lockForUpdate()
                 ->first();
 
-            if ($cart) return $cart;
+            if ($cart)
+                return $cart;
 
             return Cart::create([
                 'user_id' => $userId,
-                'status'  => CartStatus::Active,
+                'status' => CartStatus::Active,
             ]);
         });
     }
@@ -94,7 +89,8 @@ class CartService extends BaseService
                 ->lockForUpdate()
                 ->get();
 
-            if ($carts->count() <= 1) return;
+            if ($carts->count() <= 1)
+                return;
 
             // Mantén el más reciente y cierra el resto
             $keep = $carts->sortByDesc('id')->shift();
@@ -132,15 +128,15 @@ class CartService extends BaseService
             $incomingPriceIdsPositives = []; // para modo replace
 
             foreach ($incoming as $row) {
-                $priceId = (int)$row['price_id'];
-                $qty     = max(0, (int)($row['quantity'] ?? 0));
+                $priceId = (int) $row['price_id'];
+                $qty = max(0, (int) ($row['quantity'] ?? 0));
 
                 if ($qty === 0) {
                     // eliminar por item_id si viene, o por price_id si existe actualmente
                     if (!empty($row['item_id'])) {
-                        $toDeleteIds[] = (int)$row['item_id'];
+                        $toDeleteIds[] = (int) $row['item_id'];
                     } elseif (isset($currentByPrice[$priceId])) {
-                        $toDeleteIds[] = (int)$currentByPrice[$priceId]->id;
+                        $toDeleteIds[] = (int) $currentByPrice[$priceId]->id;
                     }
                     continue;
                 }
@@ -150,12 +146,12 @@ class CartService extends BaseService
                 $existing = $currentByPrice[$priceId] ?? null;
 
                 $toUpsert[] = [
-                    'id'        => $existing?->id,         // null crea
-                    'cart_id'   => $cart->id,
-                    'price_id'  => $priceId,
-                    'quantity'  => $qty,
-                    'updated_at'=> now(),
-                    'created_at'=> $existing?->created_at ?? now(),
+                    'id' => $existing?->id,         // null crea
+                    'cart_id' => $cart->id,
+                    'price_id' => $priceId,
+                    'quantity' => $qty,
+                    'updated_at' => now(),
+                    'created_at' => $existing?->created_at ?? now(),
                 ];
             }
 
@@ -181,7 +177,9 @@ class CartService extends BaseService
                 $incomingPriceIdsPositives = array_values(array_unique($incomingPriceIdsPositives));
                 CartItem::query()
                     ->where('cart_id', $cart->id)
-                    ->when(!empty($incomingPriceIdsPositives), fn($q) =>
+                    ->when(
+                        !empty($incomingPriceIdsPositives),
+                        fn($q) =>
                         $q->whereNotIn('price_id', $incomingPriceIdsPositives)
                     )
                     ->delete();

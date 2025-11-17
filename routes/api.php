@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountController;
@@ -34,6 +35,7 @@ Route::prefix('catalog')->group(function () {
 // Rutas protegidas por login
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('me', [AuthController::class, 'me']);
     
     // Operaciones de escritura del catálogo
     Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
@@ -49,10 +51,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('roles', RolController::class);
 
     // Rutas para que el usuario edite su carrito
-    Route::get('/cart',                [EcommerceController::class, 'index']);          // Obtener carrito activo (o crearlo)
-    Route::get('/cart/{cart}',         [EcommerceController::class, 'show']);           // Ver un carrito por ID (solo dueño)
+    Route::get('/cart',                [CartController::class, 'index']);               // Obtener carrito activo
+    Route::get('/cart/{cart}',         [CartController::class, 'index']);           // Ver un carrito por ID (solo dueño)
     Route::put('/cart/{cart}',         [EcommerceController::class, 'update']);         // Bulk update del carrito + ítems
-    Route::delete('/cart/{cart}',      [EcommerceController::class, 'destroy']);        // Vaciar carrito
+    Route::delete('/cart/{cart}',      [CartController::class, 'destroy']);        // Vaciar carrito
     Route::post('/cart/{cart}/checkout',[EcommerceController::class, 'checkout']);      // Checkout (crea orden)
 
     Route::post('/cart/items',         [EcommerceController::class, 'store']);          // Agregar ítem al carrito activo
